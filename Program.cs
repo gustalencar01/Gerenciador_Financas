@@ -14,7 +14,6 @@ namespace Financas
             string resposta;
             bool respBoll = true;
             System.Console.WriteLine("Bem-vindo ao sistema de finanças pessoais!");
-
             GerenciamentoDespesas despesas = new GerenciamentoDespesas();
             GerenciamentoReceitas receitas = new GerenciamentoReceitas();
 
@@ -41,7 +40,8 @@ namespace Financas
                 switch (opcao)
                 {
                     case "1":
-                        while (true)
+                        bool continueLoopDespesas = true;
+                        while (continueLoopDespesas)
                         {
                             Console.WriteLine("--- Menu de Gerenciamento de Despesas ---");
                             Console.WriteLine("1. Adicionar nova despesa");
@@ -120,7 +120,8 @@ namespace Financas
                                 case "4":
                                     // Lógica para sair
                                     Console.WriteLine("Saindo do gerenciamento de despesas.");
-                                    continue;
+                                    continueLoopDespesas = false;
+                                    break;
 
                                 default:
                                     Console.WriteLine("Opção inválida. Por favor, escolha uma opção de 1 a 4.");
@@ -129,10 +130,10 @@ namespace Financas
 
                             Console.WriteLine(); // Adiciona uma linha em branco para melhor visualização
                         }
-                        
+                        break;
                     case "2":
-
-                        while (true)
+                        bool continueLoopReceitas = true;
+                        while (continueLoopReceitas)
                         {
                             Console.WriteLine("--- Menu de Gerenciamento de Receitas ---");
                             Console.WriteLine("1. Adicionar nova receita");
@@ -204,7 +205,8 @@ namespace Financas
                                 case "4":
                                     // Lógica para sair
                                     Console.WriteLine("Saindo do gerenciamento de receitas.");
-                                    continue;
+                                    continueLoopReceitas = false;
+                                    break;
 
                                 default:
                                     Console.WriteLine("Opção inválida. Por favor, escolha uma opção de 1 a 4.");
@@ -213,8 +215,8 @@ namespace Financas
 
                             Console.WriteLine(); // Adiciona uma linha em branco para melhor visualização
                         }
+                        break;
                 }
-
             }
         }
     }
