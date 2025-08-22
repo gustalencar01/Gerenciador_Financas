@@ -1,52 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Financas
 {
-    public class Gerenciamento_Receitas
+    public struct Receita
     {
+        public string Descricao { get; set; }
+        public double Valor { get; set; }
+    }
 
-        struct Receita
+    public class GerenciamentoReceitas
+    {
+        private readonly Dictionary<string, List<Receita>> categorias;
+
+        public GerenciamentoReceitas()
         {
-            public string Nome;
-            public double Valor;
-        }
-        // Dicionário para armazenar listas de receitas por categoria
-        Dictionary<string, List<Receita>> categorias = new Dictionary<string, List<Receita>>()
-        {
-            { "Salário", new List<Receita>() },
-            { "Investimentos", new List<Receita>() },
-            { "Freelance", new List<Receita>() },
-            { "Outras", new List<Receita>() }
-        };
-        public void CadastrarReceitas()
-        {
-            Console.WriteLine("Informe a categoria da sua receita:");
-            Console.WriteLine("1. Salário");
-            Console.WriteLine("2. Investimentos");
-            Console.WriteLine("3. Freelance");
-            Console.WriteLine("4. Outras");
-            string opcao = Console.ReadLine();
-            string categoriaEscolhida = "";
-            switch (opcao)
+            categorias = new Dictionary<string, List<Receita>>()
             {
-                case "1": categoriaEscolhida = "Salário"; break;
-                case "2": categoriaEscolhida = "Investimentos"; break;
-                case "3": categoriaEscolhida = "Freelance"; break;
-                case "4": categoriaEscolhida = "Outras"; break;
-                default:
-                    Console.WriteLine("Opção inválida.");
-                    return;
+                { "Salário", new List<Receita>() },
+                { "Investimentos", new List<Receita>() },
+                { "Freelance", new List<Receita>() },
+                { "Outras", new List<Receita>() }
+            };
+        }
+
+        // Adiciona uma receita a uma categoria existente
+        public void AdicionarReceita(string categoria, string descricao, double valor)
+        {
+            if (!categorias.ContainsKey(categoria))
+            {
+                throw new ArgumentException("Categoria inválida.");
             }
-            Receita novaReceita;
-            novaReceita.Nome = categoriaEscolhida;
-            Console.WriteLine($"Informe o valor recebido de {categoriaEscolhida}:");
-            novaReceita.Valor =+ double.Parse(Console.ReadLine());
-            categorias[categoriaEscolhida].Add(novaReceita);
-            Console.WriteLine($"Receita de {novaReceita.Nome} cadastrada com sucesso!");
+
+            categorias[categoria].Add(new Receita { Descricao = descricao, Valor = valor });
+        }
+
+        // Retorna o total de uma categoria
+        public double ObterTotalPorCategoria(string categoria)
+        {
+            if (!categorias.ContainsKey(categoria)) return 0;
+
+            double total = 0;
+            foreach (var receita in categorias[categoria])
+            {
+                total += receita.Valor;
+            }
+            return total;
+        }
+
+        // Lista todas as receitas de uma categoria
+        public IEnumerable<Receita> ListarReceitas(string categoria)
+        {
+            return categorias.ContainsKey(categoria) ? categorias[categoria] : new List<Receita>();
+        }
+
+        // Retorna todas as categorias
+        public IEnumerable<string> ListarCategorias()
+        {
+            return categorias.Keys;
         }
     }
 }
