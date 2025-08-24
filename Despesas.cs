@@ -37,6 +37,22 @@ namespace Financas
             categorias[categoria].Add(new Despesa { Descricao = descricao, Valor = valor });
         }
 
+        // Remove uma despesa de uma categoria
+        public void RemoverDespesa(string categoria, string descricao)
+        {
+            if (!categorias.ContainsKey(categoria))
+            {
+                throw new ArgumentException("Categoria inválida.");
+            }
+            var despesas = categorias[categoria];
+            var despesa = despesas.Find(d => d.Descricao == descricao);
+            if (despesa.Equals(default(Despesa)))
+            {
+                throw new ArgumentException("Despesa não encontrada.");
+            }
+            despesas.Remove(despesa);
+        }
+
         // Retorna o total de uma categoria
         public double ObterTotalPorCategoria(string categoria)
         {
