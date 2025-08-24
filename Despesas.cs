@@ -33,6 +33,10 @@ namespace Financas
             {
                 throw new ArgumentException("Categoria inválida.");
             }
+            if (valor < 0)
+            {
+                throw new ArgumentException("O valor da despesa não pode ser negativo.");
+            }
 
             categorias[categoria].Add(new Despesa { Descricao = descricao, Valor = valor });
         }
