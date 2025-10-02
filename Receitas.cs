@@ -32,8 +32,28 @@ namespace Financas
             {
                 throw new ArgumentException("Categoria inválida.");
             }
+            if (valor < 0)
+            {
+                throw new ArgumentException("O valor da despesa não pode ser negativo.");
+            }
 
             categorias[categoria].Add(new Receita { Descricao = descricao, Valor = valor });
+        }
+
+        // Remove uma receita de uma categoria
+        public void RemoverReceita(string categoria, string descricao)
+        {
+            if (!categorias.ContainsKey(categoria))
+            {
+                throw new ArgumentException("Categoria inválida.");
+            }
+            var receitas = categorias[categoria];
+            var receita = receitas.FirstOrDefault(r => r.Descricao == descricao);
+            if (receita.Equals(default(Receita)))
+            {
+                throw new ArgumentException("Receita não encontrada.");
+            }
+            receitas.Remove(receita);
         }
 
         // Retorna o total de uma categoria

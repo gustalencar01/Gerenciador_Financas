@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +48,8 @@ namespace Financas
                             Console.WriteLine("1. Adicionar nova despesa");
                             Console.WriteLine("2. Obter valor total de uma categoria");
                             Console.WriteLine("3. Listar despesas de uma categoria");
-                            Console.WriteLine("4. Sair");
+                            Console.WriteLine("4. Remover despesa de uma categoria");
+                            Console.WriteLine("5. Sair");
                             Console.Write("Escolha uma opção: ");
 
                             string opcaoDespesas = Console.ReadLine();
@@ -85,23 +87,35 @@ namespace Financas
                                         Console.WriteLine("Valor inválido.");
                                         break;
                                     }
-
+                                    try {
                                     despesas.AdicionarDespesa(categoriaEscolhida, descricao, valor);
                                     Console.WriteLine($"Despesa adicionada com sucesso na categoria {categoriaEscolhida}!");
+                                    }
+                                    catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.Message);
+                                    }
                                     break;
 
                                 case "2":
                                     // Lógica para obter o valor total
                                     Console.Write("Digite o nome da categoria para obter o total: ");
                                     string categoriaTotal = Console.ReadLine();
-                                    Console.WriteLine($"Total em {categoriaTotal}: {despesas.ObterTotalPorCategoria(categoriaTotal):C}");
-                                    break;
+                                    try
+                                    {
+                                        Console.WriteLine($"Total em {categoriaTotal}: {despesas.ObterTotalPorCategoria(categoriaTotal):C}");
+                                    }
+                                    catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.Message);
+                                    }
+                                        break;
 
                                 case "3":
                                     // Lógica para listar despesas
                                     Console.Write("Digite o nome da categoria para listar as despesas: ");
                                     string categoriaListar = Console.ReadLine();
-
+                                    try {
                                     var listaDespesas = despesas.ListarDespesas(categoriaListar);
                                     if (listaDespesas.Any())
                                     {
@@ -115,9 +129,29 @@ namespace Financas
                                     {
                                         Console.WriteLine($"Nenhuma despesa encontrada para a categoria {categoriaListar}.");
                                     }
+                                    }catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.Message);
+                                    }
                                     break;
 
                                 case "4":
+                                    Console.Write("Digite o nome da categoria da despesa que deseja remover: ");
+                                    string categoriaRemover = Console.ReadLine();
+                                    Console.Write("Digite a descrição da despesa que deseja remover: ");
+                                    string descricaoRemover = Console.ReadLine();
+                                    try
+                                    {
+                                        despesas.RemoverDespesa(categoriaRemover, descricaoRemover);
+                                        Console.WriteLine($"Despesa '{descricaoRemover}' removida da categoria '{categoriaRemover}' com sucesso!");
+                                    }
+                                    catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.Message);
+                                    }
+                                    break;
+
+                                case "5":
                                     // Lógica para sair
                                     Console.WriteLine("Saindo do gerenciamento de despesas.");
                                     continueLoopDespesas = false;
@@ -139,7 +173,8 @@ namespace Financas
                             Console.WriteLine("1. Adicionar nova receita");
                             Console.WriteLine("2. Listar receitas de uma categoria");
                             Console.WriteLine("3. Listar categorias de receita");
-                            Console.WriteLine("4. Sair");
+                            Console.WriteLine("4. Remover receita por categoria");
+                            Console.WriteLine("5. Sair");
                             Console.Write("Escolha uma opção: ");
 
                             string opcaoReceita = Console.ReadLine();
@@ -160,49 +195,84 @@ namespace Financas
                                         Console.WriteLine("Valor inválido.");
                                         break;
                                     }
-
-                                    receitas.AdicionarReceita(categoriaReceita, descricaoReceita, valorReceita);
-                                    Console.WriteLine($"Receita adicionada com sucesso na categoria {categoriaReceita}!");
-                                    break;
+                                    try
+                                    {
+                                        receitas.AdicionarReceita(categoriaReceita, descricaoReceita, valorReceita);
+                                        Console.WriteLine($"Receita adicionada com sucesso na categoria {categoriaReceita}!");
+                                    }
+                                    catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.ToString());
+                                    }
+                                        break;
 
                                 case "2":
                                     // Lógica para listar receitas
                                     Console.Write("Digite o nome da categoria para listar as receitas: ");
                                     string categoriaListar = Console.ReadLine();
-
-                                    var listaReceitas = receitas.ListarReceitas(categoriaListar);
-                                    if (listaReceitas.Any())
+                                    try
                                     {
-                                        Console.WriteLine($"Receitas na categoria {categoriaListar}:");
-                                        foreach (var receita in listaReceitas)
+                                        var listaReceitas = receitas.ListarReceitas(categoriaListar);
+                                        if (listaReceitas.Any())
                                         {
-                                            Console.WriteLine($"Descrição: {receita.Descricao}, Valor: {receita.Valor:C}");
+                                            Console.WriteLine($"Receitas na categoria {categoriaListar}:");
+                                            foreach (var receita in listaReceitas)
+                                            {
+                                                Console.WriteLine($"Descrição: {receita.Descricao}, Valor: {receita.Valor:C}");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"Nenhuma receita encontrada para a categoria {categoriaListar}.");
                                         }
                                     }
-                                    else
+                                    catch (ArgumentException ex)
                                     {
-                                        Console.WriteLine($"Nenhuma receita encontrada para a categoria {categoriaListar}.");
+                                        Console.WriteLine(ex.Message);
                                     }
                                     break;
 
                                 case "3":
                                     // Lógica para listar categorias
-                                    var categoriasReceita = new List<string>(receitas.ListarCategorias());
-                                    if (categoriasReceita.Any())
+                                    try
                                     {
-                                        Console.WriteLine("Categorias de receita existentes:");
-                                        foreach (var categoria in categoriasReceita)
+                                        var categoriasReceita = new List<string>(receitas.ListarCategorias());
+                                        if (categoriasReceita.Any())
                                         {
-                                            Console.WriteLine($"- {categoria}");
+                                            Console.WriteLine("Categorias de receita existentes:");
+                                            foreach (var categoria in categoriasReceita)
+                                            {
+                                                Console.WriteLine($"- {categoria}");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Nenhuma categoria de receita encontrada.");
                                         }
                                     }
-                                    else
+                                    catch (ArgumentException ex)
                                     {
-                                        Console.WriteLine("Nenhuma categoria de receita encontrada.");
+                                        Console.WriteLine(ex.Message);
+                                    }
+
+                                    break;
+                                case "4":
+                                    // Lógica para remover receita
+                                    Console.Write("Digite o nome da categoria da receita que deseja remover: ");
+                                    string categoriaRemoverReceita = Console.ReadLine();
+                                    Console.Write("Digite a descrição da receita que deseja remover: ");
+                                    string descricaoRemoverReceita = Console.ReadLine();
+                                    try
+                                    {
+                                        receitas.RemoverReceita(categoriaRemoverReceita, descricaoRemoverReceita);
+                                        Console.WriteLine($"Receita '{descricaoRemoverReceita}' removida da categoria '{categoriaRemoverReceita}' com sucesso!");
+                                    }
+                                    catch (ArgumentException ex)
+                                    {
+                                        Console.WriteLine(ex.Message);
                                     }
                                     break;
-
-                                case "4":
+                                case "5":
                                     // Lógica para sair
                                     Console.WriteLine("Saindo do gerenciamento de receitas.");
                                     continueLoopReceitas = false;
