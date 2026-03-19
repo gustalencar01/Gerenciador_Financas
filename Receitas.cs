@@ -20,11 +20,18 @@ namespace Financas
             {
                 { "Salário", new List<Receita>() },
                 { "Investimentos", new List<Receita>() },
-                { "Freelance", new List<Receita>() },
-                { "Outras", new List<Receita>() }
+                { "Freelance", new List<Receita>() }
             };
         }
 
+        public void AdicionarCategoria(string categoria)
+        {
+            if (string.IsNullOrWhiteSpace(categoria))
+                throw new ArgumentException("Nome da categoria não pode ser vazio.");
+            if (_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria já existe.");
+            _categorias.Add(categoria, new List<Receita>());
+        }
         public void AdicionarReceita(string categoria, string descricao, double valor)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))

@@ -26,6 +26,21 @@ namespace Financas
                 { "Educação", new List<Despesa>() }
             };
         }
+        public void AdicionarCategoria(string categoria)
+        {
+            if (string.IsNullOrWhiteSpace(categoria))
+                throw new ArgumentException("Nome da categoria não pode ser vazio.");
+            if (_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria já existe.");
+            _categorias.Add(categoria, new List<Despesa>());
+        }
+
+        public void RemoverCategoria(string categoria)
+        {
+            if (!_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria não encontrada.");
+            _categorias.Remove(categoria);
+        }
 
         public void AdicionarDespesa(string categoria, string descricao, double valor)
         {

@@ -118,7 +118,9 @@ namespace Financas
 
         static void AdicionarDespesa(GerenciamentoDespesas despesas)
         {
+            String res;
             var categorias = new List<string>(despesas.ListarCategorias());
+
             if (categorias.Count == 0)
             {
                 Console.WriteLine("Nenhuma categoria encontrada. Crie uma despesa para começar.");
@@ -128,6 +130,24 @@ namespace Financas
             for (int i = 0; i < categorias.Count; i++)
                 Console.WriteLine($"{i + 1}. {categorias[i]}");
 
+            Console.WriteLine("Deseja adicionar categoria personalizada?");
+            res = Console.ReadLine();
+            if (res == "s")
+            {
+                    Console.Write("Digite o nome da nova categoria: ");
+                    var novaCategoria = Console.ReadLine();
+                    try
+                    {
+                        despesas.AdicionarCategoria(novaCategoria);
+                        Console.WriteLine($"Categoria '{novaCategoria}' adicionada com sucesso!");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+            }
+
+            Console.WriteLine();
             Console.Write("Escolha o número da categoria: ");
             if (!int.TryParse(Console.ReadLine(), out int escolha) || escolha < 1 || escolha > categorias.Count)
             {
@@ -216,7 +236,32 @@ namespace Financas
 
         static void AdicionarReceita(GerenciamentoReceitas receitas)
         {
-            Console.Write("Digite a categoria da receita: ");
+            String res;
+            var categ = new List<string>(receitas.ListarCategorias());
+            for (int i = 0; i < categ.Count; i++)
+                Console.WriteLine($"{i + 1}. {categ[i]}");
+
+            Console.WriteLine("Deseja adicionar categoria personalizada?");
+            res = Console.ReadLine();
+            if (res == "s")
+            {
+                    Console.Write("Digite o nome da nova categoria: ");
+                    var novaCategoria = Console.ReadLine();
+                    try
+                    {
+                        receitas.AdicionarCategoria(novaCategoria);
+                        Console.WriteLine($"Categoria '{novaCategoria}' adicionada com sucesso!");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+            
+            }
+            Console.WriteLine();
+
+
+            Console.Write("Escolha uma categoria: ");
             var categoria = Console.ReadLine();
 
             Console.Write("Digite a descrição da receita: ");
