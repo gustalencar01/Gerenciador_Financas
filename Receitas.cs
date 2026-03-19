@@ -12,11 +12,11 @@ namespace Financas
 
     public class GerenciamentoReceitas
     {
-        private readonly Dictionary<string, List<Receita>> categorias;
+        private readonly Dictionary<string, List<Receita>> _categorias;
 
         public GerenciamentoReceitas()
         {
-            categorias = new Dictionary<string, List<Receita>>()
+            _categorias = new Dictionary<string, List<Receita>>(StringComparer.OrdinalIgnoreCase)
             {
                 { "Salário", new List<Receita>() },
                 { "Investimentos", new List<Receita>() },
@@ -25,60 +25,56 @@ namespace Financas
             };
         }
 
-        // Adiciona uma receita a uma categoria existente
         public void AdicionarReceita(string categoria, string descricao, double valor)
         {
-            if (!categorias.ContainsKey(categoria))
-            {
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
                 throw new ArgumentException("Categoria inválida.");
-            }
-            if (valor < 0)
-            {
-                throw new ArgumentException("O valor da despesa não pode ser negativo.");
-            }
 
-            categorias[categoria].Add(new Receita { Descricao = descricao, Valor = valor });
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("Descrição não pode ser vazia.");
+
+            if (valor < 0)
+                throw new ArgumentException("O valor da receita não pode ser negativo.");
+
+            _categorias[categoria].Add(new Receita { Descricao = descricao, Valor = valor });
         }
 
-        // Remove uma receita de uma categoria
         public void RemoverReceita(string categoria, string descricao)
         {
-            if (!categorias.ContainsKey(categoria))
-            {
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
                 throw new ArgumentException("Categoria inválida.");
-            }
-            var receitas = categorias[categoria];
-            var receita = receitas.FirstOrDefault(r => r.Descricao == descricao);
-            if (receita.Equals(default(Receita)))
-            {
+
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("Descrição não pode ser vazia.");
+
+            var receitas = _categorias[categoria];
+            var index = receitas.FindIndex(r => r.Descricao == descricao);
+
+            if (index < 0)
                 throw new ArgumentException("Receita não encontrada.");
-            }
-            receitas.Remove(receita);
+
+            receitas.RemoveAt(index);
         }
 
-        // Retorna o total de uma categoria
         public double ObterTotalPorCategoria(string categoria)
         {
-            if (!categorias.ContainsKey(categoria)) return 0;
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria inválida.");
 
-            double total = 0;
-            foreach (var receita in categorias[categoria])
-            {
-                total += receita.Valor;
-            }
-            return total;
+            return _categorias[categoria].Sum(r => r.Valor);
         }
 
-        // Lista todas as receitas de uma categoria
         public IEnumerable<Receita> ListarReceitas(string categoria)
         {
-            return categorias.ContainsKey(categoria) ? categorias[categoria] : new List<Receita>();
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria inválida.");
+
+            return _categorias[categoria];
         }
 
-        // Retorna todas as categorias
         public IEnumerable<string> ListarCategorias()
         {
-            return categorias.Keys;
+            return _categorias.Keys;
         }
     }
 }

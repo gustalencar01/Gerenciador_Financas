@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Financas
 {
@@ -11,11 +12,11 @@ namespace Financas
 
     public class GerenciamentoDespesas
     {
-        private readonly Dictionary<string, List<Despesa>> categorias;
+        private readonly Dictionary<string, List<Despesa>> _categorias;
 
         public GerenciamentoDespesas()
         {
-            categorias = new Dictionary<string, List<Despesa>>()
+            _categorias = new Dictionary<string, List<Despesa>>(StringComparer.OrdinalIgnoreCase)
             {
                 { "Alimentação", new List<Despesa>() },
                 { "Transporte", new List<Despesa>() },
@@ -26,60 +27,56 @@ namespace Financas
             };
         }
 
-        // Adiciona uma despesa a uma categoria existente
         public void AdicionarDespesa(string categoria, string descricao, double valor)
         {
-            if (!categorias.ContainsKey(categoria))
-            {
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
                 throw new ArgumentException("Categoria inválida.");
-            }
-            if (valor < 0)
-            {
-                throw new ArgumentException("O valor da despesa não pode ser negativo.");
-            }
 
-            categorias[categoria].Add(new Despesa { Descricao = descricao, Valor = valor });
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("Descrição não pode ser vazia.");
+
+            if (valor < 0)
+                throw new ArgumentException("O valor da despesa não pode ser negativo.");
+
+            _categorias[categoria].Add(new Despesa { Descricao = descricao, Valor = valor });
         }
 
-        // Remove uma despesa de uma categoria
         public void RemoverDespesa(string categoria, string descricao)
         {
-            if (!categorias.ContainsKey(categoria))
-            {
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
                 throw new ArgumentException("Categoria inválida.");
-            }
-            var despesas = categorias[categoria];
-            var despesa = despesas.Find(d => d.Descricao == descricao);
-            if (despesa.Equals(default(Despesa)))
-            {
+
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("Descrição não pode ser vazia.");
+
+            var despesas = _categorias[categoria];
+            var index = despesas.FindIndex(d => d.Descricao == descricao);
+
+            if (index < 0)
                 throw new ArgumentException("Despesa não encontrada.");
-            }
-            despesas.Remove(despesa);
+
+            despesas.RemoveAt(index);
         }
 
-        // Retorna o total de uma categoria
         public double ObterTotalPorCategoria(string categoria)
         {
-            if (!categorias.ContainsKey(categoria)) return 0;
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria inválida.");
 
-            double total = 0;
-            foreach (var despesa in categorias[categoria])
-            {
-                total += despesa.Valor;
-            }
-            return total;
+            return _categorias[categoria].Sum(d => d.Valor);
         }
 
-        // Lista todas as despesas de uma categoria
         public IEnumerable<Despesa> ListarDespesas(string categoria)
         {
-            return categorias.ContainsKey(categoria) ? categorias[categoria] : new List<Despesa>();
+            if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
+                throw new ArgumentException("Categoria inválida.");
+
+            return _categorias[categoria];
         }
 
-        // Retorna todas as categorias
         public IEnumerable<string> ListarCategorias()
         {
-            return categorias.Keys;
+            return _categorias.Keys;
         }
     }
 }
