@@ -60,5 +60,26 @@ namespace SistemaFinancasApi.Controllers
                 return BadRequest(new { erro = "Erro ao excluir: " + ex.Message });
             }
         }
+
+        // PUT: api/Despesas/5
+        [HttpPut("{id}")]
+        public IActionResult PutDespesa(int id, [FromBody] DespesaEntity despesaAtualizada, [FromServices] IFinanceiroService financeiroService)
+        {
+            try
+            {
+                var resultado = financeiroService.AtualizarDespesa(id, despesaAtualizada);
+
+                if (resultado == "Despesa não encontrada.")
+                {
+                    return NotFound(new { mensagem = resultado });
+                }
+
+                return Ok(new { mensagem = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erro = "Erro ao atualizar despesa: " + ex.Message });
+            }
+        }
     }
 }

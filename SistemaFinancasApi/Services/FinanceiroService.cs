@@ -45,6 +45,32 @@ public class FinanceiroService : IFinanceiroService
         };
     }
 
+    public string AtualizarDespesa(int id, DespesaEntity despesaAtualizada)
+    {
+        var despesaBanco = _context.Despesas.Find(id);
+
+        if (despesaBanco == null)
+        {
+            return "Despesa não encontrada.";
+        }
+
+        // Validação de Limite antes de atualizar
+        var alertaLimite = ValidarLimite(despesaAtualizada.Categoria, despesaAtualizada.Valor - despesaBanco.Valor);
+
+        // Atualiza os campos
+        despesaBanco.Descricao = despesaAtualizada.Descricao;
+        despesaBanco.Valor = despesaAtualizada.Valor;
+        despesaBanco.Categoria = despesaAtualizada.Categoria;
+        despesaBanco.Data = despesaAtualizada.Data;
+        despesaBanco.Pago = despesaAtualizada.Pago;
+
+        _context.SaveChanges();
+
+        return alertaLimite == "Dentro do limite."
+            ? "Despesa atualizada com sucesso!"
+            : $"Despesa atualizada, mas {alertaLimite}";
+    }
+
     public string ExcluirDespesa(int id)
     {
         var despesa = _context.Despesas.Find(id);
