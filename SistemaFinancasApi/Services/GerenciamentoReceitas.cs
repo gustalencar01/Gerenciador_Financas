@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +18,7 @@ namespace Financas
         {
             _categorias = new Dictionary<string, List<Receita>>(StringComparer.OrdinalIgnoreCase)
             {
-                { "Sal√°rio", new List<Receita>() },
+                { "Sal·rio", new List<Receita>() },
                 { "Investimentos", new List<Receita>() },
                 { "Freelance", new List<Receita>() }
             };
@@ -27,21 +27,21 @@ namespace Financas
         public void AdicionarCategoria(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria))
-                throw new ArgumentException("Nome da categoria n√£o pode ser vazio.");
+                throw new ArgumentException("Nome da categoria n„o pode ser vazio.");
             if (_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria j√° existe.");
+                throw new ArgumentException("Categoria j· existe.");
             _categorias.Add(categoria, new List<Receita>());
         }
         public void AdicionarReceita(string categoria, string descricao, double valor)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             if (string.IsNullOrWhiteSpace(descricao))
-                throw new ArgumentException("Descri√ß√£o n√£o pode ser vazia.");
+                throw new ArgumentException("DescriÁ„o n„o pode ser vazia.");
 
             if (valor < 0)
-                throw new ArgumentException("O valor da receita n√£o pode ser negativo.");
+                throw new ArgumentException("O valor da receita n„o pode ser negativo.");
 
             _categorias[categoria].Add(new Receita { Descricao = descricao, Valor = valor });
         }
@@ -49,16 +49,16 @@ namespace Financas
         public void RemoverReceita(string categoria, string descricao)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             if (string.IsNullOrWhiteSpace(descricao))
-                throw new ArgumentException("Descri√ß√£o n√£o pode ser vazia.");
+                throw new ArgumentException("DescriÁ„o n„o pode ser vazia.");
 
             var receitas = _categorias[categoria];
             var index = receitas.FindIndex(r => r.Descricao == descricao);
 
             if (index < 0)
-                throw new ArgumentException("Receita n√£o encontrada.");
+                throw new ArgumentException("Receita n„o encontrada.");
 
             receitas.RemoveAt(index);
         }
@@ -66,7 +66,7 @@ namespace Financas
         public double ObterTotalPorCategoria(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             return _categorias[categoria].Sum(r => r.Valor);
         }
@@ -74,7 +74,7 @@ namespace Financas
         public IEnumerable<Receita> ListarReceitas(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             return _categorias[categoria];
         }

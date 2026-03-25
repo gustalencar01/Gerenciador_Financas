@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,40 +18,40 @@ namespace Financas
         {
             _categorias = new Dictionary<string, List<Despesa>>(StringComparer.OrdinalIgnoreCase)
             {
-                { "Alimenta√ß√£o", new List<Despesa>() },
+                { "AlimentaÁ„o", new List<Despesa>() },
                 { "Transporte", new List<Despesa>() },
                 { "Moradia", new List<Despesa>() },
                 { "Lazer", new List<Despesa>() },
-                { "Sa√∫de", new List<Despesa>() },
-                { "Educa√ß√£o", new List<Despesa>() }
+                { "Sa˙de", new List<Despesa>() },
+                { "EducaÁ„o", new List<Despesa>() }
             };
         }
         public void AdicionarCategoria(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria))
-                throw new ArgumentException("Nome da categoria n√£o pode ser vazio.");
+                throw new ArgumentException("Nome da categoria n„o pode ser vazio.");
             if (_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria j√° existe.");
+                throw new ArgumentException("Categoria j· existe.");
             _categorias.Add(categoria, new List<Despesa>());
         }
 
         public void RemoverCategoria(string categoria)
         {
             if (!_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria n√£o encontrada.");
+                throw new ArgumentException("Categoria n„o encontrada.");
             _categorias.Remove(categoria);
         }
 
         public void AdicionarDespesa(string categoria, string descricao, double valor)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             if (string.IsNullOrWhiteSpace(descricao))
-                throw new ArgumentException("Descri√ß√£o n√£o pode ser vazia.");
+                throw new ArgumentException("DescriÁ„o n„o pode ser vazia.");
 
             if (valor < 0)
-                throw new ArgumentException("O valor da despesa n√£o pode ser negativo.");
+                throw new ArgumentException("O valor da despesa n„o pode ser negativo.");
 
             _categorias[categoria].Add(new Despesa { Descricao = descricao, Valor = valor });
         }
@@ -59,16 +59,16 @@ namespace Financas
         public void RemoverDespesa(string categoria, string descricao)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             if (string.IsNullOrWhiteSpace(descricao))
-                throw new ArgumentException("Descri√ß√£o n√£o pode ser vazia.");
+                throw new ArgumentException("DescriÁ„o n„o pode ser vazia.");
 
             var despesas = _categorias[categoria];
             var index = despesas.FindIndex(d => d.Descricao == descricao);
 
             if (index < 0)
-                throw new ArgumentException("Despesa n√£o encontrada.");
+                throw new ArgumentException("Despesa n„o encontrada.");
 
             despesas.RemoveAt(index);
         }
@@ -76,7 +76,7 @@ namespace Financas
         public double ObterTotalPorCategoria(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             return _categorias[categoria].Sum(d => d.Valor);
         }
@@ -84,7 +84,7 @@ namespace Financas
         public IEnumerable<Despesa> ListarDespesas(string categoria)
         {
             if (string.IsNullOrWhiteSpace(categoria) || !_categorias.ContainsKey(categoria))
-                throw new ArgumentException("Categoria inv√°lida.");
+                throw new ArgumentException("Categoria inv·lida.");
 
             return _categorias[categoria];
         }
