@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Financas;
 
 namespace SistemaFinancasApi.Data
 {
@@ -7,26 +6,34 @@ namespace SistemaFinancasApi.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // Isso criará tabelas no banco de dados para Despesas e Receitas
         public DbSet<DespesaEntity> Despesas { get; set; }
-        // Se quiser receitas depois, adicione o DbSet de receitas aqui
         public DbSet<ReceitaEntity> Receitas { get; set; }
+        public DbSet<LimiteEntity> Limites { get; set; } 
     }
 
-    // Criamos uma versão "Entity" da sua struct para o banco de dados
     public class DespesaEntity
     {
-        public int Id { get; set; } // O SQL precisa de uma chave primária
+        public int Id { get; set; }
         public string Descricao { get; set; }
         public double Valor { get; set; }
         public string Categoria { get; set; }
+        public DateTime Data { get; set; } 
+        public bool Pago { get; set; } 
     }
 
     public class ReceitaEntity
     {
-        public int Id { get; set; } // O SQL precisa de uma chave primária
+        public int Id { get; set; }
         public string Descricao { get; set; }
         public double Valor { get; set; }
         public string Categoria { get; set; }
+        public DateTime Data { get; set; } 
+    }
+
+    public class LimiteEntity
+    {
+        public int Id { get; set; }
+        public string Categoria { get; set; }
+        public double ValorLimite { get; set; }
     }
 }
