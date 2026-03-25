@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaFinancasApi.Data; 
-using Financas; // O namespace onde estão suas structs e classes
-
+using Financas; 
 namespace SistemaFinancasApi.Controllers
 {
     [Route("api/[controller]")]
@@ -27,6 +26,44 @@ namespace SistemaFinancasApi.Controllers
             _context.Receitas.Add(novaReceita);
             _context.SaveChanges();
             return Ok(new { mensagem = "Receita salva com sucesso!" });
+        }
+
+        // PUT: api/Receitas/5
+        [HttpPut("{id}")]
+        public IActionResult PutReceita(int id, [FromBody] ReceitaEntity receitaAtualizada)
+        {
+            var receitaBanco = _context.Receitas.Find(id);
+
+            if (receitaBanco == null)
+            {
+                return NotFound(new { mensagem = "Receita não encontrada para edição." });
+            }
+
+            // Atualiza os dados
+            receitaBanco.Descricao = receitaAtualizada.Descricao;
+            receitaBanco.Valor = receitaAtualizada.Valor;
+            receitaBanco.Categoria = receitaAtualizada.Categoria;
+
+            _context.SaveChanges();
+
+            return Ok(new { mensagem = "Receita atualizada com sucesso!" });
+        }
+
+        // DELETE: api/Receita
+        [HttpDelete("{id}")]
+        public IActionResult DeleteReceita(int id)
+        {
+            var receita = _context.Receitas.Find(id);
+
+            if (receita == null)
+            {
+                return NotFound(new { mensagem = "Receita não encontrada para exclusão." });
+            }
+
+            _context.Receitas.Remove(receita);
+            _context.SaveChanges();
+
+            return Ok(new { mensagem = "Receita removida do banco!" });
         }
     }
 }
