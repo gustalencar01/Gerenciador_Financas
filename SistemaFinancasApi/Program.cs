@@ -1,4 +1,3 @@
-using Financas;
 using Microsoft.EntityFrameworkCore;
 using SistemaFinancasApi.Data;
 
@@ -9,11 +8,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // O Swagger básico não precisa de 'using' extra
 
-builder.Services.AddSingleton<GerenciamentoDespesas>();
-builder.Services.AddSingleton<GerenciamentoReceitas>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IFinanceiroService, FinanceiroService>();
 
 var app = builder.Build();
 

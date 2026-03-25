@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaFinancasApi.Data; 
-using Financas; // Nome do seu namespace original
+using System.Linq;
 
 namespace SistemaFinancasApi.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class DespesasController : ControllerBase
@@ -23,60 +24,41 @@ namespace SistemaFinancasApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostDespesa([FromBody] DespesaEntity novaDespesa)
+        public IActionResult PostDespesa([FromBody] DespesaEntity novaDespesa, [FromServices] IFinanceiroService financeiroService)
         {
             try
             {
-                // 1. Adiciona o objeto na fila do Entity Framework
-                _context.Despesas.Add(novaDespesa);
+                // O Controller não faz nada além de passar a bola para a Service
+                var resultado = financeiroService.AdicionarDespesaComValidacao(novaDespesa);
 
-                // 2. ORDEM CRÍTICA: Salva as mudanças fisicamente no SQL Server
-                _context.SaveChanges();
-
-                return Ok(new { mensagem = "Agora sim! Salvo no banco de dados." });
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { erro = ex.Message });
+                return BadRequest(new { erro = "Erro ao processar: " + ex.Message });
             }
         }
 
-        // PUT: api/Despesas/5
-        [HttpPut("{id}")]
-        public IActionResult PutDespesa(int id, [FromBody] DespesaEntity despesaAtualizada)
-        {
-            var despesaBanco = _context.Despesas.Find(id);
-
-            if (despesaBanco == null)
-            {
-                return NotFound(new { mensagem = "Despesa não encontrada para edição." });
-            }
-
-            // Atualiza os dados
-            despesaBanco.Descricao = despesaAtualizada.Descricao;
-            despesaBanco.Valor = despesaAtualizada.Valor;
-            despesaBanco.Categoria = despesaAtualizada.Categoria;
-
-            _context.SaveChanges();
-
-            return Ok(new { mensagem = "Despesa atualizada com sucesso!" });
-        }
 
         // DELETE: api/Despesas/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteDespesa(int id)
+        public IActionResult DeleteDespesa(int id, [FromServices] IFinanceiroService financeiroService)
         {
-            var despesa = _context.Despesas.Find(id);
-
-            if (despesa == null)
+            try
             {
-                return NotFound(new { mensagem = "Despesa não encontrada para exclusão." });
+                var resultado = financeiroService.ExcluirDespesa(id);
+
+                if (resultado == "Despesa não encontrada.")
+                {
+                    return NotFound(new { mensagem = resultado });
+                }
+
+                return Ok(new { mensagem = resultado });
             }
-
-            _context.Despesas.Remove(despesa);
-            _context.SaveChanges();
-
-            return Ok(new { mensagem = "Despesa removida do banco!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { erro = "Erro ao excluir: " + ex.Message });
+            }
         }
     }
 }

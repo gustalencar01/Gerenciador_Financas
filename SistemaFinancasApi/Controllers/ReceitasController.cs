@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaFinancasApi.Data; 
-using Financas; 
+using System.Linq;
+
 namespace SistemaFinancasApi.Controllers
 {
     [Route("api/[controller]")]
