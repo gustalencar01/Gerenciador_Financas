@@ -22,49 +22,70 @@ namespace SistemaFinancasApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostReceita([FromBody] ReceitaEntity novaReceita)
+        public IActionResult PostReceita([FromBody] ReceitaEntity novaReceita [FromServices] IFinanceiroServices financeiroServices)
         {
-            _context.Receitas.Add(novaReceita);
-            _context.SaveChanges();
-            return Ok(new { mensagem = "Receita salva com sucesso!" });
+            try
+            {
+                var resultado = financeiroService.AdicionarReeita(novaReceita);
+                return Ok(new { mensagem = resultado });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { erro = "Erro ao processar: " + ex.Message });
+            }
+
         }
 
         // PUT: api/Receitas/5
         [HttpPut("{id}")]
-        public IActionResult PutReceita(int id, [FromBody] ReceitaEntity receitaAtualizada)
+        public IActionResult PutReceita(int id, [FromBody] ReceitaEntity receitaAtualizada, [FromServices] IFinanceiroService financeiroService)
         {
-            var receitaBanco = _context.Receitas.Find(id);
-
-            if (receitaBanco == null)
+            try
             {
-                return NotFound(new { mensagem = "Receita não encontrada para edição." });
+                var resultado = financeiroService.AtualizarReceita(id, receitaAtualizada);
+
+                if (resultado == "Receita não encontrada.")
+                {
+                    return NotFound(new { mensagem = resultado });
+                }
+
+                if (resultado.StartsWith("Erro"))
+                {
+                    return BadRequest(new { mensagem = resultado });
+                }
+
+                return Ok(new { mensagem = resultado });
             }
-
-            // Atualiza os dados
-            receitaBanco.Descricao = receitaAtualizada.Descricao;
-            receitaBanco.Valor = receitaAtualizada.Valor;
-            receitaBanco.Categoria = receitaAtualizada.Categoria;
-
-            _context.SaveChanges();
-
-            return Ok(new { mensagem = "Receita atualizada com sucesso!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { erro = "Falha ao processar atualização: " + ex.Message });
+            }
         }
 
-        // DELETE: api/Receita
+        // DELETE: api/Receitas/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteReceita(int id)
+        public IActionResult DeleteReceita(int id, [FromServices] IFinanceiroService financeiroService)
         {
-            var receita = _context.Receitas.Find(id);
-
-            if (receita == null)
+            try
             {
-                return NotFound(new { mensagem = "Receita não encontrada para exclusão." });
+                var resultado = financeiroService.ExcluirReceita(id);
+
+                if (resultado == "Receita não encontrada.")
+                {
+                    return NotFound(new { mensagem = resultado });
+                }
+
+                if (resultado.StartsWith("Erro"))
+                {
+                    return BadRequest(new { mensagem = resultado });
+                }
+
+                return Ok(new { mensagem = resultado });
             }
-
-            _context.Receitas.Remove(receita);
-            _context.SaveChanges();
-
-            return Ok(new { mensagem = "Receita removida do banco!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { erro = "Falha na comunicação: " + ex.Message });
+            }
         }
     }
 }

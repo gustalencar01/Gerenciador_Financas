@@ -128,4 +128,82 @@ public class FinanceiroService : IFinanceiroService
 
         return "Limite removido com sucesso!";
     }
+
+
+    public string AdicionarReceita(ReceitaEntity novaReceita)
+    {
+        if (novaReceita.Valor <= 0)
+        {
+            return "Erro: O valor da receita deve ser maior que zero.";
+        }
+        if (string.IsNullOrWhiteSpace(novaReceita.Descricao))
+        {
+            return "Erro: A descrição da receita é obrigatória.";
+        }
+        if (novaReceita.Data == default)
+        {
+            novaReceita.Data = DateTime.Now;
+        }
+
+        try
+        {
+            _context.Receitas.Add(novaReceita);
+            _context.SaveChanges();
+            return "Receita salva com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            return "Erro interno ao salvar no banco de dados.";
+        }
+    }
+
+    public string AtualizarReceita(int id, ReceitaEntity receitaAtualizada)
+    {
+        var receitaBanco = _context.Receitas.Find(id);
+
+        if (receitaBanco == null)
+        {
+            return "Receita não encontrada.";
+        }
+        if (receitaAtualizada.Valor <= 0)
+        {
+            return "Erro: O valor da receita deve ser maior que zero.";
+        }
+        receitaBanco.Descricao = receitaAtualizada.Descricao;
+        receitaBanco.Valor = receitaAtualizada.Valor;
+        receitaBanco.Categoria = receitaAtualizada.Categoria;
+        receitaBanco.Data = receitaAtualizada.Data;
+
+        try
+        {
+            _context.SaveChanges();
+            return "Receita atualizada com sucesso!";
+        }
+        catch (Exception)
+        {
+            return "Erro interno ao atualizar a receita no banco.";
+        }
+    }
+
+    public string ExcluirReceita(int id)
+    {
+        var receita = _context.Receitas.Find(id);
+
+        if (receita == null)
+        {
+            return "Receita não encontrada.";
+        }
+
+        try
+        {
+            _context.Receitas.Remove(receita);
+            _context.SaveChanges();
+            return "Receita removida com sucesso!";
+        }
+        catch (Exception)
+        {
+            return "Erro ao tentar excluir a receita no banco de dados.";
+        }
+    }
+
 }
