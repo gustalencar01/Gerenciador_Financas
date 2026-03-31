@@ -36,7 +36,6 @@ namespace SistemaFinancasApi.Controllers
 
         }
 
-        // PUT: api/Receitas/5
         [HttpPut("{id}")]
         public IActionResult PutReceita(int id, [FromBody] ReceitaEntity receitaAtualizada, [FromServices] IFinanceiroService financeiroService)
         {
@@ -62,8 +61,7 @@ namespace SistemaFinancasApi.Controllers
             }
         }
 
-        // DELETE: api/Receitas/5
-        [HttpDelete("{id}")]
+=        [HttpDelete("{id}")]
         public IActionResult DeleteReceita(int id, [FromServices] IFinanceiroService financeiroService)
         {
             try

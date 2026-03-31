@@ -15,25 +15,21 @@ namespace SistemaFinancasApi.Controllers
             _context = context;
         }
 
-        // POST: api/Limites
         [HttpPost]
         public IActionResult PostLimite([FromBody] LimiteEntity novoLimite, [FromServices] IFinanceiroService financeiroService)
         {
             try
             {
-                // O Controller não toma nenhuma decisão lógica
                 var resultado = financeiroService.SalvarOuAtualizarLimite(novoLimite);
 
                 return Ok(new { mensagem = resultado });
             }
             catch (Exception ex)
             {
-                // Caso algo dê errado no Banco ou na Service, o Controller captura aqui
                 return BadRequest(new { erro = "Erro interno ao processar limite: " + ex.Message });
             }
         }
 
-        // GET: api/Limites
         [HttpGet]
         public IActionResult GetLimites()
         {
@@ -41,7 +37,6 @@ namespace SistemaFinancasApi.Controllers
             return Ok(lista);
         }
 
-        // DELETE: api/Limites/5
         [HttpDelete("{id}")]
         public IActionResult DeleteLimite(int id, [FromServices] IFinanceiroService financeiroService)
         {

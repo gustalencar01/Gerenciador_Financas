@@ -11,7 +11,7 @@ namespace SistemaFinancasApi.Controllers
     {
         private readonly AppDbContext _context; // Referência ao banco
 
-        // O .NET injeta o banco automaticamente aqui
+        
         public DespesasController(AppDbContext context)
         {
             _context = context;
@@ -28,7 +28,6 @@ namespace SistemaFinancasApi.Controllers
         {
             try
             {
-                // O Controller não faz nada além de passar a bola para a Service
                 var resultado = financeiroService.AdicionarDespesaComValidacao(novaDespesa);
 
                 return Ok(resultado);
@@ -40,7 +39,6 @@ namespace SistemaFinancasApi.Controllers
         }
 
 
-        // DELETE: api/Despesas/5
         [HttpDelete("{id}")]
         public IActionResult DeleteDespesa(int id, [FromServices] IFinanceiroService financeiroService)
         {
@@ -61,7 +59,6 @@ namespace SistemaFinancasApi.Controllers
             }
         }
 
-        // PUT: api/Despesas/5
         [HttpPut("{id}")]
         public IActionResult PutDespesa(int id, [FromBody] DespesaEntity despesaAtualizada, [FromServices] IFinanceiroService financeiroService)
         {

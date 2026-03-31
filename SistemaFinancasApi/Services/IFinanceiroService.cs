@@ -4,7 +4,6 @@ using System.Linq;
 
 public interface IFinanceiroService
 {
-	// Este método retorna um objeto com a mensagem de sucesso e o alerta de limite
 	object AdicionarDespesaComValidacao(DespesaEntity novaDespesa);
 
 	string AtualizarDespesa(int id, DespesaEntity despesaAtualizada);

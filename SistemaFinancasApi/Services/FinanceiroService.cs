@@ -14,7 +14,6 @@ public class FinanceiroService : IFinanceiroService
 
     public object AdicionarDespesaComValidacao(DespesaEntity novaDespesa)
     {
-        // 1. Lógica de Verificação de Limite
         var limiteConfig = _context.Limites
             .FirstOrDefault(l => l.Categoria.ToLower() == novaDespesa.Categoria.ToLower());
 
@@ -26,18 +25,15 @@ public class FinanceiroService : IFinanceiroService
                 .Where(d => d.Categoria.ToLower() == novaDespesa.Categoria.ToLower() && d.Data.Month == DateTime.Now.Month)
                 .Sum(d => d.Valor);
 
-            // ATENÇÃO: Aqui usamos 'ValorLimite' (o nome certo da sua Entity)
             if (gastoAtual + novaDespesa.Valor > limiteConfig.ValorLimite)
             {
                 alerta = $"?? ALERTA: Limite de {novaDespesa.Categoria} excedido!";
             }
         }
 
-        // 2. Persistência no Banco (Movido para cá!)
         _context.Despesas.Add(novaDespesa);
         _context.SaveChanges();
 
-        // 3. Retorno para o Controller
         return new
         {
             mensagem = "Despesa salva com sucesso!",
@@ -54,10 +50,8 @@ public class FinanceiroService : IFinanceiroService
             return "Despesa não encontrada.";
         }
 
-        // Validação de Limite antes de atualizar
         var alertaLimite = ValidarLimite(despesaAtualizada.Categoria, despesaAtualizada.Valor - despesaBanco.Valor);
 
-        // Atualiza os campos
         despesaBanco.Descricao = despesaAtualizada.Descricao;
         despesaBanco.Valor = despesaAtualizada.Valor;
         despesaBanco.Categoria = despesaAtualizada.Categoria;
@@ -77,7 +71,6 @@ public class FinanceiroService : IFinanceiroService
 
         if (despesa == null)
         {
-            // Retornamos null ou uma mensagem específica para o Controller saber que não achou
             return "Despesa não encontrada.";
         }
 
@@ -89,25 +82,22 @@ public class FinanceiroService : IFinanceiroService
 
     public string SalvarOuAtualizarLimite(LimiteEntity novoLimite)
     {
-        // 1. Validação simples de entrada
         if (string.IsNullOrEmpty(novoLimite.Categoria))
         {
             return "Erro: A categoria não pode ser vazia.";
         }
 
-        // 2. Busca se já existe um limite para essa categoria
         var limiteExistente = _context.Limites
             .FirstOrDefault(l => l.Categoria.ToLower() == novoLimite.Categoria.ToLower());
 
         if (limiteExistente != null)
         {
-            // 3. ATUALIZAÇÃO: Se existe, apenas altera o valor
-            limiteExistente.ValorLimite = novoLimite.ValorLimite; // Corrigido para ValorLimite
+            limiteExistente.ValorLimite = novoLimite.ValorLimite; 
             _context.SaveChanges();
             return $"Limite da categoria '{limiteExistente.Categoria}' atualizado com sucesso!";
         }
 
-        // 4. ADIÇÃO: Se não existe, cria um novo registro
+        
         _context.Limites.Add(novoLimite);
         _context.SaveChanges();
 
