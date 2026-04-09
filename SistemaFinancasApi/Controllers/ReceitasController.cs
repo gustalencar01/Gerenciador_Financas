@@ -22,11 +22,11 @@ namespace SistemaFinancasApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostReceita([FromBody] ReceitaEntity novaReceita [FromServices] IFinanceiroServices financeiroServices)
+        public IActionResult PostReceita([FromBody] ReceitaEntity novaReceita, [FromServices] IFinanceiroService financeiroService)
         {
             try
             {
-                var resultado = financeiroService.AdicionarReeita(novaReceita);
+                var resultado = financeiroService.AdicionarReceita(novaReceita);
                 return Ok(new { mensagem = resultado });
             }
             catch(Exception ex)
@@ -61,7 +61,7 @@ namespace SistemaFinancasApi.Controllers
             }
         }
 
-=        [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteReceita(int id, [FromServices] IFinanceiroService financeiroService)
         {
             try

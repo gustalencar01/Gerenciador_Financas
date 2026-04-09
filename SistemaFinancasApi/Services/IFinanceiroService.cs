@@ -14,7 +14,7 @@ public interface IFinanceiroService
 
 	string ExcluirLimite(int id);
 
-	string AdicionarReeita(ReceitaEntity novaReceita);
+	string AdicionarReceita(ReceitaEntity novaReceita);
 
 	string AtualizarReceita(int id, ReceitaEntity receitaAtualizada);
 

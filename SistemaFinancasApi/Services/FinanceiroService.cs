@@ -196,4 +196,25 @@ public class FinanceiroService : IFinanceiroService
         }
     }
 
+    private string ValidarLimite(string categoria, double valorAdicional)
+    {
+        var limiteConfig = _context.Limites
+            .FirstOrDefault(l => l.Categoria.ToLower() == categoria.ToLower());
+
+        if (limiteConfig != null)
+        {
+            var gastoAtual = _context.Despesas
+                .Where(d => d.Categoria.ToLower() == categoria.ToLower() && d.Data.Month == DateTime.Now.Month)
+                .Sum(d => d.Valor);
+
+            if (gastoAtual + valorAdicional > limiteConfig.ValorLimite)
+            {
+                return $"ALERTA: Limite de {categoria} excedido!";
+            }
+        }
+
+        return "Dentro do limite.";
+    }
+
+
 }
