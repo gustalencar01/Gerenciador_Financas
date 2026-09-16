@@ -1,12 +1,12 @@
 # Gerenciador de Finanças
 
 Aplicação de gerenciamento de receitas, despesas e limites. O backend foi
-migrado para Java 17 com Spring Boot, Spring Web, Spring Data JPA e SQL Server.
+migrado para Java 25 com Spring Boot, Spring Web, Spring Data JPA e SQL Server.
 O frontend permanece em React/Vite.
 
 ## Pré-requisitos
 
-- Java 17 ou superior
+- Java 25 ou superior
 - Maven 3.9 ou superior
 - Node.js 18 ou superior (para o frontend)
 - SQL Server acessível pela aplicação
